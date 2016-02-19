@@ -1,3 +1,3 @@
-SpellCheck = (function () {
+CHECKER = (function () {
     "use strict";
 }());

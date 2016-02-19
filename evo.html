@@ -10,8 +10,7 @@
         <h1>Evolving Strings</h1>
         <div>This is a simple experiement in evolving strings of characters</div>
         <div></div>
-        <form action="evo.html" method="get">
-        
+        <form action="javascript:;" onsubmit="EVO.run(this)">
             <h2>Dictionary:</h2>
             <div> 
                 <input name="dict" type="radio" value="tenhundred" checked><a href="http://blog.xkcd.com/2015/09/22/a-thing-explainer-word-checker/">Simple Writer Ten Hundred Word List</a>
@@ -42,6 +41,7 @@
             <div>
                 <input name="survive" type="range" value="10">
             </div>
+            <input type="submit" value="Evolve">
         </form>
     </div>
   </body>
