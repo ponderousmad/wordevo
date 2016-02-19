@@ -1,0 +1,3 @@
+SpellCheck = (function () {
+    "use strict";
+}());
