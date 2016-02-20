@@ -56,7 +56,7 @@ CHECKER = (function () {
         return this.words.length - 1;
     };
     
-    function loadDictionary(resource) {
+    function loadDictionary(resource, sorted) {
         var dictionary = new Dictionary(resource),
             request = new XMLHttpRequest();
             
@@ -67,8 +67,11 @@ CHECKER = (function () {
             
             var listing = request.response.split("\r\n");
             var startTime = Date.now();
-            listing.sort(lengthOrder);
+            if (!sorted) {
+                listing.sort(lengthOrder);
+            }
             var sortEnd = Date.now();
+            
             console.log("Sort time: " + (sortEnd - startTime) / 1000);
             
             var words = [];
@@ -103,7 +106,7 @@ CHECKER = (function () {
     }
     
     return {
-        tenhundred: loadDictionary("dict/tenhundred.txt"),
-        enable: loadDictionary("dict/enable1.txt")
+        tenhundred: loadDictionary("dict/tenhundred.txt", false),
+        enable: loadDictionary("dict/enable1.txt", true)
     };
 }());
