@@ -18,7 +18,9 @@ EVO = (function () {
     }
     
     function freeScore(dictionary, sequence) {
-        var maxSize = Math.min(dictionary.maxLength(), sequence.length);
+        var maxSize = Math.min(dictionary.maxLength(), sequence.length),
+            score = 0;
+
         for (var size = 1; size < maxSize; ++size) {
             for (var i = 0; i < sequence.length - size; ++i) {
                 if (dictionary.checkWord(sequence.slice(i, i + size))) {
@@ -67,7 +69,7 @@ EVO = (function () {
     };
     
     RawSequence.prototype.createMutant = function(parent) {
-        var mutation = randomElement[this.mutations],
+        var mutation = randomElement(this.mutations),
             sequence = mutation(parent.representation);
         
         return new Entity(sequence, sequence);
@@ -117,7 +119,7 @@ EVO = (function () {
     };
     
     CountSequence.prototype.createMutant = function(parent) {
-        var mutation = randomElement[this.mutations],
+        var mutation = randomElement(this.mutations),
             representation = mutation(parent.representation);
         
         return new Entity(countToSequence(representation), representation);
@@ -152,7 +154,7 @@ EVO = (function () {
         var size = parseInt(params.population_size),
             generation_count = parseInt(params.generations),
             survive_percent = parseInt(params.survive_percent),
-            survive_fraction = Math.abs((survive_percent.isNaN() ? 10 : survive_percent) / 100),
+            survive_fraction = Math.abs((isNaN(survive_percent) ? 10 : survive_percent) / 100),
             dict = CHECKER[params.dictionary],
             scores = {
                 free: freeScore,
@@ -160,8 +162,8 @@ EVO = (function () {
             };
         
         this.dictionary = CHECKER[params.dictionary];
-        this.population_size = size.isNaN() ? 1000 : clamp(size, 10, 10000);
-        this.generations = generation_count.isNaN() ? 50 : clamp(generation_count, 1, 1000);
+        this.population_size = isNaN(size) ? 1000 : clamp(size, 10, 10000);
+        this.generations = isNaN(generation_count) ? 50 : clamp(generation_count, 1, 1000);
         this.survivors = Math.ceil(this.population_size * clamp(survive_fraction, 0, 1));
         this.score = scores[params.score] ? scores[params.score] : splitScore;
         this.repr = (params.representation === "count" ? defaultCount : defaultRaw)(1, 20);
@@ -197,6 +199,10 @@ EVO = (function () {
     };
     
     Evolver.prototype.step = function () {
+        if (!this.dictionary.loaded) {
+            return;
+        }
+        
         this.scorePopulation();
         
         // Cull:
@@ -206,11 +212,12 @@ EVO = (function () {
             this.population.push(this.mutantEntity());
         }
         
-        console.log("Done step");
+        this.generation += 1;
+        console.log("Done step " + this.generation);
     };
     
     Evolver.prototype.isDone = function () {
-        return this.generation >= this.generation_count;
+        return this.generation >= this.generations;
     };
     
     var evolver = null;
@@ -238,8 +245,7 @@ EVO = (function () {
         }
         
         evolver = new Evolver(params);
-        
-        console.log(JSON.stringify(evolver));
+        console.log("Starting evolve");
     }
     
     window.onload = function(e) {
