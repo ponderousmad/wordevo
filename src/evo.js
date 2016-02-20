@@ -192,8 +192,10 @@ EVO = (function () {
             if (entity.score === null) {
                 entity.score = this.score(this.dictionary, entity.sequence);
             }
-        }        
-        this.population.sort(function (a, b) { return a.score - b.score; });
+        }
+        
+        // Sort by descending score.
+        this.population.sort(function (a, b) { return b.score - a.score; });
         
         console.log("Max score: " + this.population[0].score);
     };
