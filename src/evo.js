@@ -51,6 +51,11 @@ EVO = (function () {
         this.score = null;
     }
     
+    Entity.prototype.toString = function() {
+        var repString = this.sequence === this.representation ? "" : JSON.stringify(this.representation);
+        return this.score + ": " + this.sequence + repString;
+    }
+    
     function RawSequence(minLength, maxLength, mutations) {
         this.minLength = minLength;
         this.maxLength = maxLength;
@@ -171,6 +176,10 @@ EVO = (function () {
         this.population = [];
         this.generation = 0;
         
+        this.generationElement = document.getElementById("generation");
+        this.scoreElement = document.getElementById("max_score");
+        this.topElement = document.getElementById("top_sequences");
+      
         while (this.population.length < this.population_size) {
             this.population.push(this.randomEntity());
         }
@@ -197,7 +206,7 @@ EVO = (function () {
         // Sort by descending score.
         this.population.sort(function (a, b) { return b.score - a.score; });
         
-        console.log("Max score: " + this.population[0].score);
+        this.scoreElement.innerHTML = this.population[0].score.toString();
     };
     
     Evolver.prototype.step = function () {
@@ -215,7 +224,14 @@ EVO = (function () {
         }
         
         this.generation += 1;
-        console.log("Done step " + this.generation);
+        this.generationElement.innerHTML = this.generation.toString();
+        
+        this.topElement.innerHTML = "";
+        for (var t = 0; t < Math.min(this.population.length, 10); ++t) {
+            var element = document.createElement("li");
+            element.innerHTML = this.population[t].toString();
+            this.topElement.appendChild(element);
+        }
     };
     
     Evolver.prototype.isDone = function () {
