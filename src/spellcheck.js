@@ -66,13 +66,9 @@ CHECKER = (function () {
             console.log("Loading " + resource);
             
             var listing = request.response.split("\r\n");
-            var startTime = Date.now();
             if (!sorted) {
                 listing.sort(lengthOrder);
             }
-            var sortEnd = Date.now();
-            
-            console.log("Sort time: " + (sortEnd - startTime) / 1000);
             
             var words = [];
             
@@ -85,10 +81,6 @@ CHECKER = (function () {
                 words.push(word);
             }
             dictionary.addWords(words);
-            
-            var buildEnd = Date.now();
-            
-            console.log("Build time: " + (buildEnd - sortEnd) / 1000);
                 
             // Fill in any gaps.
             for (var length = 0; length < dictionary.maxLength(); ++length) {
