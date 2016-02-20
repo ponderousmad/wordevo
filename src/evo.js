@@ -67,7 +67,7 @@ EVO = (function () {
     Entity.prototype.toString = function() {
         var repString = this.sequence === this.representation ? "" : JSON.stringify(this.representation);
         return this.score + ": " + this.sequence + repString;
-    }
+    };
     
     function RawSequence(minLength, maxLength, mutations) {
         this.minLength = minLength;
