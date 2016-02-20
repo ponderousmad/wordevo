@@ -13,33 +13,38 @@
         <form action="javascript:;" onsubmit="EVO.run(this)">
             <h2>Dictionary:</h2>
             <div> 
-                <input name="dict" type="radio" value="tenhundred" checked><a href="http://blog.xkcd.com/2015/09/22/a-thing-explainer-word-checker/">Simple Writer Ten Hundred Word List</a>
+                <input name="dictionary" type="radio" value="tenhundred" checked><a href="http://blog.xkcd.com/2015/09/22/a-thing-explainer-word-checker/">Simple Writer Ten Hundred Word List</a>
             </div>
             <div>
-                <input name="dict" type="radio" value=enable"><a href="http://www.puzzlers.org/dokuwiki/doku.php?id=solving:wordlists:about:enable_readme">Enable Word List</a>
+                <input name="dictionary" type="radio" value=enable"><a href="http://www.puzzlers.org/dokuwiki/doku.php?id=solving:wordlists:about:enable_readme">Enable Word List</a>
             </div>
-            <h2>Selection Rule:</h2>
+            <h2>Scoring Rule:</h2>
             <div> 
-                <input name="filter" type="radio" value="1" checked>1 point per dictionary word, independent of surroundings.
+                <input name="score" type="radio" value="free" checked>1 point per dictionary word, independent of surroundings.
             </div>
             <div>
-                <input name="filter" type="radio" value="2"/>1 point per dictionary word, separation required.
+                <input name="score" type="radio" value="split"/>1 point per dictionary word, separation required.
             </div>
             <h2>Representation:</h2>
             <div> 
-                <input name="rep" type="radio" value="raw" checked>Raw String
+                <input name="representation" type="radio" value="raw" checked>Raw String
             </div>
             <div>
-                <input name="rep" type="radio" value="count">Letter Count
+                <input name="representation" type="radio" value="count">Letter Count
             </div>
             <h2>Population Size:</h2>
             <div>
-                <input name="pop" type="number" value="1000">
+                <input name="population_size" type="number" value="1000">
+                
+            </div>
+            <h2>Generations:</h2>
+            <div>
+                <input name="generations" type="number" value="50">
                 
             </div>
             <h2>Survival Fraction:</h2>
             <div>
-                <input name="survive" type="range" value="10">
+                <input name="survive_percent" type="range" value="10">
             </div>
             <input type="submit" value="Evolve">
         </form>

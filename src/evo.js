@@ -3,11 +3,12 @@ EVO = (function () {
     
     function run(form) {
         var params = {
-            dict: null,
-            rep: null,
-            filter: null,
-            pop: null,
-            survive: null
+            dictionary: null,
+            representation: null,
+            score: null,
+            population_size: null,
+            generations: null,
+            survive_percent: null
         };
         for (var p in params) {
             if (params.hasOwnProperty(p)) {
