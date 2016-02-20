@@ -167,8 +167,8 @@ EVO = (function () {
             };
         
         this.dictionary = CHECKER[params.dictionary];
-        this.population_size = isNaN(size) ? 1000 : clamp(size, 10, 10000);
-        this.generations = isNaN(generation_count) ? 50 : clamp(generation_count, 1, 1000);
+        this.population_size = isNaN(size) ? 1000 : clamp(size, 10, 100000);
+        this.generations = isNaN(generation_count) ? 50 : clamp(generation_count, 1, 10000);
         this.survivors = Math.ceil(this.population_size * clamp(survive_fraction, 0, 1));
         this.score = scores[params.score] ? scores[params.score] : splitScore;
         this.repr = (params.representation === "count" ? defaultCount : defaultRaw)(1, 20);
