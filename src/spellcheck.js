@@ -38,7 +38,7 @@ CHECKER = (function () {
             next = mid(low, high);
         
         while (low !== high) {
-            var nextWord = words[next]
+            var nextWord = words[next];
             if (word === nextWord) {
                 return true;
             }
