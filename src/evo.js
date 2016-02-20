@@ -207,6 +207,12 @@ EVO = (function () {
         this.population.sort(function (a, b) { return b.score - a.score; });
         
         this.scoreElement.innerHTML = this.population[0].score.toString();
+        this.topElement.innerHTML = "";
+        for (var t = 0; t < Math.min(this.population.length, 10); ++t) {
+            var element = document.createElement("li");
+            element.innerHTML = this.population[t].toString();
+            this.topElement.appendChild(element);
+        }
     };
     
     Evolver.prototype.step = function () {
@@ -225,13 +231,6 @@ EVO = (function () {
         
         this.generation += 1;
         this.generationElement.innerHTML = this.generation.toString();
-        
-        this.topElement.innerHTML = "";
-        for (var t = 0; t < Math.min(this.population.length, 10); ++t) {
-            var element = document.createElement("li");
-            element.innerHTML = this.population[t].toString();
-            this.topElement.appendChild(element);
-        }
     };
     
     Evolver.prototype.isDone = function () {
