@@ -58,6 +58,10 @@ EVO = (function () {
         return score;
     }
     
+    function splitLengthAdjustedScore(dictionary, sequence) {
+        return splitLengthScore(dictionary, sequence) - sequence.length * 0.125;
+    }
+    
     function Entity(sequence, representation) {
         this.sequence = sequence;
         this.representation = representation;
@@ -177,7 +181,8 @@ EVO = (function () {
             scores = {
                 free: freeScore,
                 split: splitScore,
-                splitLength: splitLengthScore
+                splitLength: splitLengthScore,
+                splitLengthAdjusted: splitLengthAdjustedScore,
             };
         
         this.dictionary = CHECKER[params.dictionary];

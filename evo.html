@@ -20,13 +20,16 @@
             </div>
             <h2>Scoring Rule:</h2>
             <div> 
-                <input name="score" type="radio" value="free" checked>1 point per dictionary word, independent of surroundings.
+                <input name="score" type="radio" value="free" checked>Rule 1: 1 point per dictionary word, independent of surroundings.
             </div>
             <div>
-                <input name="score" type="radio" value="split"/>1 point per dictionary word, separation required.
+                <input name="score" type="radio" value="split"/>Rule 2: 1 point per dictionary word, separation required.
             </div>
             <div>
-                <input name="score" type="radio" value="splitLength"/>1 point per letter per dictionary word, separation required.
+                <input name="score" type="radio" value="splitLength"/>Rule 3: 1 point per letter per dictionary word, separation required.
+            </div>
+            <div>
+                <input name="score" type="radio" value="splitLengthAdjusted"/>Rule 4: Same as Rule 4, with a penalty for long sequences.
             </div>
             <h2>Representation:</h2>
             <div> 
