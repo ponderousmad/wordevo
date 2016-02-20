@@ -45,6 +45,19 @@ EVO = (function () {
         return score;
     }
     
+    function splitLengthScore(dictionary, sequence) {
+        var parts = sequence.split(splitter),
+            score = 0;
+        
+        for (var p = 0; p < parts.length; ++p) {
+            var part = parts[p];
+            if (dictionary.checkWord(parts[p])) {
+                score += part.length;
+            }
+        }
+        return score;
+    }
+    
     function Entity(sequence, representation) {
         this.sequence = sequence;
         this.representation = representation;
@@ -163,7 +176,8 @@ EVO = (function () {
             dict = CHECKER[params.dictionary],
             scores = {
                 free: freeScore,
-                split: splitScore
+                split: splitScore,
+                splitLength: splitLengthScore
             };
         
         this.dictionary = CHECKER[params.dictionary];
