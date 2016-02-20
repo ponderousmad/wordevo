@@ -20,8 +20,36 @@ CHECKER = (function () {
         }
     };
     
+    function mid(low, high) {
+        return low + Math.floor((high - low) / 2);
+    }
+    
     Dictionary.prototype.checkWord = function (word) {
+        // Use binary search technique described here:
+        // http://ejohn.org/blog/revised-javascript-dictionary-search/
         
+        if (word.length > this.maxLength()) {
+            return false;
+        }
+        
+        var words = this.words[word.length],
+            low = 0,
+            high = words.length,
+            next = mid(low, high);
+        
+        while (low !== high) {
+            var nextWord = words[next]
+            if (word === nextWord) {
+                return true;
+            }
+            if (nextWord < word && low !== next) {
+                low = next;
+            } else {
+                high = next;
+            }
+            next = mid(low, high);
+        }
+        return false;
     };
     
     Dictionary.prototype.maxLength = function () {
