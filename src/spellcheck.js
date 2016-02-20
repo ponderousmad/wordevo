@@ -28,7 +28,7 @@ CHECKER = (function () {
         // Use binary search technique described here:
         // http://ejohn.org/blog/revised-javascript-dictionary-search/
         
-        if (word.length > this.maxLength()) {
+        if (word.length > this.maxLength() || word.length == 0) {
             return false;
         }
         
@@ -36,7 +36,7 @@ CHECKER = (function () {
             low = 0,
             high = words.length,
             next = mid(low, high);
-        
+       
         while (low !== high) {
             var nextWord = words[next];
             if (word === nextWord) {
@@ -53,7 +53,7 @@ CHECKER = (function () {
     };
     
     Dictionary.prototype.maxLength = function () {
-        return this.words.length;
+        return this.words.length - 1;
     };
     
     function loadDictionary(resource) {
