@@ -28,7 +28,7 @@ CHECKER = (function () {
         // Use binary search technique described here:
         // http://ejohn.org/blog/revised-javascript-dictionary-search/
         
-        if (word.length > this.maxLength() || word.length == 0) {
+        if (word.length > this.maxLength() || word.length === 0) {
             return false;
         }
         
