@@ -12,12 +12,43 @@ CHECKER = (function () {
         this.resource = resource;
         this.loaded = false;
         this.words = [];
+        this.counts = {};
+        this.bicounts = {};
+        this.totalCount = 0;
     }
     
     Dictionary.prototype.addWords = function (words) {
         if (words.length > 0 ) {
             this.words[words[0].length] = words;
         }
+    };
+    
+    Dictionary.prototype.countLetters = function(word) {
+        for (var i = 0; i < word.length; ++i) {
+            var letter = word[i],
+                count = this.counts[letter],
+                bigram = ( i > 0 ? word[i-1] : "?" ) + letter,
+                bicount = this.bicounts[bigram];
+
+            this.counts[letter] = 1 + (count ? count : 0);
+            this.bicounts[bigram] = 1 + (bicount ? bicount : 0);
+            this.totalCount += 1;
+        }
+    }
+    
+    Dictionary.prototype.frequencies = function () {
+        var frequencies = {};
+        for (var letter in this.counts) {
+            if (this.counts.hasOwnProperty(letter)) {
+                frequencies[letter] = this.counts[letter] / this.totalCount;
+            }
+        }
+        for (var bigram in this.bicounts) {
+            if (this.bicounts.hasOwnProperty(bigram)) {
+                frequencies[bigram] = this.bicounts[bigram] / this.totalCount;
+            }
+        }
+        return frequencies;
     };
     
     function mid(low, high) {
@@ -74,6 +105,7 @@ CHECKER = (function () {
             
             for (var i = 0; i < listing.length; ++i) {
                 var word = listing[i];
+                dictionary.countLetters(word);
                 if (words.length > 0 && words[0].length !== word.length) {
                     dictionary.addWords(words);
                     words = [];

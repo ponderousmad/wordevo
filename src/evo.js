@@ -13,10 +13,6 @@ EVO = (function () {
         return list[randomInt(0, list.length)];
     }
     
-    function randomSymbol() {
-        return randomElement("abcdefghijklmnopqrstuvwxyz0123456789 .,'");
-    }
-    
     function freeScore(dictionary, sequence) {
         var maxSize = Math.min(dictionary.maxLength(), sequence.length),
             score = 0;
@@ -79,37 +75,43 @@ EVO = (function () {
         this.mutations = mutations;
     }
     
-    RawSequence.prototype.createRandom = function() {
+    RawSequence.prototype.createRandom = function(symbolGenerator) {
         var length = randomInt(this.minLength, this.maxLength),
-            sequence = "";
-        
+            sequence = "",
+            prev = null;
+
         while (sequence.length < length) {
-            sequence += randomSymbol();
+            var symbol = symbolGenerator(prev)
+            sequence += symbol;
+            prev = symbol
         }
         
         return new Entity(sequence, sequence);
     };
     
-    RawSequence.prototype.createMutant = function(parent) {
+    RawSequence.prototype.createMutant = function(parent, symbolGenerator) {
         var mutation = randomElement(this.mutations),
-            sequence = mutation(parent.representation);
+            sequence = mutation(parent.representation, symbolGenerator);
         
         return new Entity(sequence, sequence);
     };
     
-    function addSymbolRaw(text) {
-        var slot = randomInt(0, text.length);
-        return text.slice(0, slot) + randomSymbol() + text.slice(slot);
+    function addSymbolRaw(text, symbolGenerator) {
+        var slot = randomInt(0, text.length),
+            prev = slot > 0 ? text[slot-1] : null;
+        
+        return text.slice(0, slot) + symbolGenerator(prev) + text.slice(slot);
     }
     
-    function removeSymbolRaw(text) {
+    function removeSymbolRaw(text, symbolGenerator) {
         var slot = randomInt(0, text.length);
         return text.slice(0, slot) + text.slice(slot + 1);
     }
     
-    function changeSymbolRaw(text) {
-        var slot = randomInt(0, text.length);
-        return text.slice(0, slot) + randomSymbol() + text.slice(slot + 1);
+    function changeSymbolRaw(text, symbolGenerator) {
+        var slot = randomInt(0, text.length),
+            prev = slot > 0 ? text[slot-1] : null;
+        return text.slice(0, slot) + symbolGenerator(prev) + text.slice(slot + 1);
     }
     
     function defaultRaw(min, max) {
@@ -130,38 +132,38 @@ EVO = (function () {
         return sequence;
     }
     
-    CountSequence.prototype.createRandom = function() {
+    CountSequence.prototype.createRandom = function(symbolGenerator) {
         var representation = {
                 count: randomInt(this.minLength, this.maxLength),
-                pattern: randomSymbol()
+                pattern: symbolGenerator()
             },
             sequence = countToSequence(representation);
 
         return new Entity(sequence, representation);
     };
     
-    CountSequence.prototype.createMutant = function(parent) {
+    CountSequence.prototype.createMutant = function(parent, symbolGenerator) {
         var mutation = randomElement(this.mutations),
-            representation = mutation(parent.representation);
+            representation = mutation(parent.representation, symbolGenerator);
         
         return new Entity(countToSequence(representation), representation);
     };
     
-    function changeCountSymbol(representation) {
+    function changeCountSymbol(representation, symbolGenerator) {
         return {
             count: representation.count,
-            pattern: randomSymbol()
+            pattern: symbolGenerator()
         };
     }
     
-    function increaseCount(representation) {
+    function increaseCount(representation, symbolGenerator) {
         return {
             count: representation.count + 1,
             pattern: representation.pattern
         };
     }
     
-    function decreaseCount(representation) {
+    function decreaseCount(representation, symbolGenerator) {
         return {
             count: Math.max(0, representation.count - 1),
             pattern: representation.pattern
@@ -171,6 +173,74 @@ EVO = (function () {
     function defaultCount(min, max) {
         return new CountSequence(min, max, [changeCountSymbol, increaseCount, decreaseCount]);
     }
+    
+    function setupProbabilities(symbols, frequencies, useBigram) {
+        var set = [],
+            SET_SIZE = 100000;
+        
+        if (!frequencies[" "]) {
+            frequencies[" "] = 0.05;
+        }
+        if (!frequencies["."]) {
+            frequencies["."] = 0.01;
+        }
+        if (!frequencies[","]) {
+            frequencies[","] = 0.005;
+        }
+        
+        for (var digit = 0; digit <= 9; ++digit) {
+            if (!frequencies[digit.toString()]) {
+                frequencies[digit.toString()] = frequencies['z'];
+            }
+        }
+        
+        for (var i = 0; i < symbols.length; ++i) {
+            var symbol = symbols[i],
+                count = Math.ceil(frequencies[symbol] * SET_SIZE);
+            for (var c = 0; c < count; ++c) {
+                set.push(symbol);
+            }
+        }
+        
+        var bigrams = {},
+            aCode = "a".charCodeAt(0),
+            zCode = "z".charCodeAt(0),
+            isLetter = function (symbol) {
+                var code = symbol.charCodeAt(0);
+                return aCode <= code && code <= zCode;
+            };
+
+        if (useBigram) {
+            for (var entry in frequencies) {
+                if (entry.length == 2 && frequencies.hasOwnProperty(entry)) {
+                    var first = entry[0],
+                        count = Math.ceil(frequencies[entry] * SET_SIZE),
+                        biset = bigrams[first];
+                        
+                    biset = biset ? biset : [];
+                    
+                    for (var n = 0; n < count; ++n) {
+                        biset.push(entry[1]);
+                    }
+                    
+                    bigrams[first] = biset;
+                }
+            }
+        }
+        
+        return function (prev) {
+            if (useBigram && Math.random() > 0.25) {
+                if ((!prev || !(isLetter(prev) || prev === "'"))) {
+                    prev = "?";
+                }
+                var biset = bigrams[prev];
+                if (biset) {
+                    return randomElement(biset);
+                }
+            }
+            return randomElement(set);
+        }
+    }
        
     function Evolver(params) {
         var size = parseInt(params.population_size),
@@ -178,19 +248,27 @@ EVO = (function () {
             survive_percent = parseInt(params.survive_percent),
             survive_fraction = Math.abs((isNaN(survive_percent) ? 10 : survive_percent) / 100),
             dict = CHECKER[params.dictionary],
+            bigram = params.symbol_distribution === "bigram",
             scores = {
                 free: freeScore,
                 split: splitScore,
                 splitLength: splitLengthScore,
                 splitLengthAdjusted: splitLengthAdjustedScore,
-            };
+            },
+            symbols = "abcdefghijklmnopqrstuvwxyz0123456789 .,'";
         
         this.dictionary = CHECKER[params.dictionary];
         this.population_size = isNaN(size) ? 1000 : clamp(size, 10, 100000);
         this.generations = isNaN(generation_count) ? 50 : clamp(generation_count, 1, 10000);
         this.survivors = Math.ceil(this.population_size * clamp(survive_fraction, 0, 1));
         this.score = scores[params.score] ? scores[params.score] : splitScore;
-        this.repr = (params.representation === "count" ? defaultCount : defaultRaw)(1, 20);
+        this.repr = (params.representation === "count" ? defaultCount : defaultRaw)(1, 25);
+        
+        this.symbolGenerator = function() { return randomElement(symbols); }
+        
+        if (bigram || params.symbol_distribution === "unigram") {
+            this.symbolGenerator = setupProbabilities(symbols, this.dictionary.frequencies(), bigram);
+        }
        
         this.population = [];
         this.generation = 0;
@@ -205,12 +283,12 @@ EVO = (function () {
     }
     
     Evolver.prototype.randomEntity = function () {
-        return this.repr.createRandom();
+        return this.repr.createRandom(this.symbolGenerator);
     };
     
     Evolver.prototype.mutantEntity = function () {
         var randomParent = this.population[randomInt(0, this.survivors)];        
-        return this.repr.createMutant(randomParent);
+        return this.repr.createMutant(randomParent, this.symbolGenerator);
     };
     
     Evolver.prototype.scorePopulation = function () {
@@ -269,6 +347,7 @@ EVO = (function () {
         var params = {
             dictionary: null,
             representation: null,
+            symbol_distribution: null,
             score: null,
             population_size: null,
             generations: null,
