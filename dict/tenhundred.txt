@@ -601,7 +601,7 @@ promiser
 couldn't
 promised
 promises
-couldn’t
+couldn't
 followed
 stoppers
 problems
@@ -731,7 +731,7 @@ middling
 messaged
 messages
 heaviest
-wouldn’t
+wouldn't
 spinners
 mentions
 helpings
@@ -1481,7 +1481,7 @@ hurries
 lifting
 touched
 doesn't
-doesn’t
+doesn't
 hurting
 touches
 showers
@@ -1738,9 +1738,9 @@ guards
 wonder
 okayed
 okay'd
-okay’d
+okay'd
 ok'ing
-ok’ing
+ok'ing
 oldest
 womens
 opened
@@ -2022,7 +2022,7 @@ shower
 dogged
 doctor
 shrugs
-didn’t
+didn't
 sicker
 sicked
 didn't
@@ -2265,7 +2265,7 @@ beater
 beaten
 trucks
 truest
-aren’t
+aren't
 aren't
 trusts
 truths
@@ -2275,7 +2275,7 @@ twenty
 around
 uncles
 weight
-wasn’t
+wasn't
 wasn't
 arrive
 unless
@@ -2427,7 +2427,7 @@ moved
 plays
 moves
 sicks
-don’t
+don't
 pleas
 sided
 sides
@@ -2485,7 +2485,7 @@ hated
 young
 whole
 fucks
-who’s
+who's
 slips
 who's
 slows
@@ -2652,7 +2652,7 @@ reads
 halve
 stops
 write
-can’t
+can't
 ready
 hairy
 store
@@ -2897,7 +2897,7 @@ tried
 tries
 greys
 turns
-isn’t
+isn't
 isn't
 heavy
 twice
@@ -2966,7 +2966,7 @@ aunts
 watch
 about
 eater
-won’t
+won't
 water
 won't
 waved
@@ -3188,7 +3188,7 @@ rung
 ring
 sirs
 wide
-he’s
+he's
 rang
 moon
 blow
@@ -3233,8 +3233,8 @@ airs
 ok'd
 tire
 wets
-ok’d
-i’ll
+ok'd
+i'll
 roof
 slip
 full
@@ -3586,10 +3586,10 @@ lie
 kid
 i'm
 let
-i’m
+i'm
 leg
 i'd
-i’d
+i'd
 ice
 led
 act
