@@ -34,7 +34,7 @@ CHECKER = (function () {
             this.bicounts[bigram] = 1 + (bicount ? bicount : 0);
             this.totalCount += 1;
         }
-    }
+    };
     
     Dictionary.prototype.frequencies = function () {
         var frequencies = {};

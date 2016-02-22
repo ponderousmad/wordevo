@@ -81,9 +81,9 @@ EVO = (function () {
             prev = null;
 
         while (sequence.length < length) {
-            var symbol = symbolGenerator(prev)
+            var symbol = symbolGenerator(prev);
             sequence += symbol;
-            prev = symbol
+            prev = symbol;
         }
         
         return new Entity(sequence, sequence);
@@ -176,24 +176,30 @@ EVO = (function () {
     
     function setupProbabilities(symbols, frequencies, useBigram) {
         var set = [],
-            SET_SIZE = 100000;
+            SET_SIZE = 100000,
+            aCode = "a".charCodeAt(0),
+            zCode = "z".charCodeAt(0),
+            isLetter = function (symbol) {
+                var code = symbol.charCodeAt(0);
+                return aCode <= code && code <= zCode;
+            },
+            bigrams = {};
         
         if (!frequencies[" "]) {
-            frequencies[" "] = 0.05;
+            frequencies[" "] = 0.08;
         }
         if (!frequencies["."]) {
-            frequencies["."] = 0.01;
+            frequencies["."] = 0.03;
         }
         if (!frequencies[","]) {
-            frequencies[","] = 0.005;
+            frequencies[","] = 0.01;
         }
         
         for (var digit = 0; digit <= 9; ++digit) {
             if (!frequencies[digit.toString()]) {
-                frequencies[digit.toString()] = frequencies['z'];
+                frequencies[digit.toString()] = frequencies[String.fromCharCode(zCode)];
             }
         }
-        
         for (var i = 0; i < symbols.length; ++i) {
             var symbol = symbols[i],
                 count = Math.ceil(frequencies[symbol] * SET_SIZE);
@@ -201,25 +207,17 @@ EVO = (function () {
                 set.push(symbol);
             }
         }
-        
-        var bigrams = {},
-            aCode = "a".charCodeAt(0),
-            zCode = "z".charCodeAt(0),
-            isLetter = function (symbol) {
-                var code = symbol.charCodeAt(0);
-                return aCode <= code && code <= zCode;
-            };
 
         if (useBigram) {
             for (var entry in frequencies) {
                 if (entry.length == 2 && frequencies.hasOwnProperty(entry)) {
                     var first = entry[0],
-                        count = Math.ceil(frequencies[entry] * SET_SIZE),
+                        number = Math.ceil(frequencies[entry] * SET_SIZE),
                         biset = bigrams[first];
                         
                     biset = biset ? biset : [];
                     
-                    for (var n = 0; n < count; ++n) {
+                    for (var n = 0; n < number; ++n) {
                         biset.push(entry[1]);
                     }
                     
@@ -239,7 +237,7 @@ EVO = (function () {
                 }
             }
             return randomElement(set);
-        }
+        };
     }
        
     function Evolver(params) {
@@ -264,7 +262,7 @@ EVO = (function () {
         this.score = scores[params.score] ? scores[params.score] : splitScore;
         this.repr = (params.representation === "count" ? defaultCount : defaultRaw)(1, 25);
         
-        this.symbolGenerator = function() { return randomElement(symbols); }
+        this.symbolGenerator = function() { return randomElement(symbols); };
         
         if (bigram || params.symbol_distribution === "unigram") {
             this.symbolGenerator = setupProbabilities(symbols, this.dictionary.frequencies(), bigram);
