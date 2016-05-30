@@ -1,4 +1,4 @@
-EVO = (function () {
+var EVO = (function () {
     "use strict";
 
     function clamp(value, min, max) {
