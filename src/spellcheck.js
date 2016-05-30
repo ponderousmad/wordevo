@@ -1,4 +1,4 @@
-CHECKER = (function () {
+var CHECKER = (function () {
     "use strict";
     
     function lengthOrder(a, b) {
@@ -96,7 +96,7 @@ CHECKER = (function () {
         request.onload = function () {
             console.log("Loading " + resource);
             
-            var listing = request.response.split("\r\n");
+            var listing = request.response.split(/\r\n|\r|\n/);
             if (!sorted) {
                 listing.sort(lengthOrder);
             }
